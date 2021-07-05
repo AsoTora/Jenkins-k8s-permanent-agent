@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    jenkins/label: {{ .Values.label }}
+  name: {{ .Values.claimName }}
+  finalizers:
+    - kubernetes.io/pvc-protection
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: default
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: {{ .Values.pvcStorageRequest }}

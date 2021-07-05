@@ -1,0 +1,31 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Kubernetes configuration
+name: "jenkins-permanent-agent" # 
+label: "jenkins-permanent-agent" # k8s resources will be labeled according to this
+replicaCount: 1
+image: "jenkins/jnlp-slave:latest" 
+imagePullSecret: "" # configure according to https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+
+resources:  
+  limits:
+    memory: ""
+    ephemeral-storage: ""
+    cpu: ""
+  requests:
+    memory: ""
+    ephemeral-storage: ""
+    cpu: ""
+
+
+# agent configuration 
+RemoteRootDir: "/home/jenkins/agent" # remote folder for agent 
+secret: "" # paste the value from jenkins UI
+DIRECT_CONNECTION: "" # your jenkins url
+INSTANCE_IDENTITY: "" # unique ID for the jenkins
+
+
+# pvc configuration
+pvcStorageRequest: ""
+claimName: "jenkins-permanent-agent-pvc"

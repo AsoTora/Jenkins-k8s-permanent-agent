@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    jenkins/label: {{ .Values.label }}
+  name: {{ .Values.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      jenkins/label:  {{ .Values.label }}
+  template:
+    metadata:
+      labels:
+        jenkins/label:  {{ .Values.label }}
+    spec:
+      containers:
+        - name: "jnlp"
+          env:
+            - name: "JENKINS_SECRET"
+              value:  {{ .Values.secret }}
+            - name: "JENKINS_INSTANCE_IDENTITY"
+              value: {{ .Values.INSTANCE_IDENTITY }}
+            - name: "JENKINS_AGENT_NAME"
+              value: {{ .Values.name }}
+            - name: "JENKINS_DIRECT_CONNECTION"
+              value: {{ Values.DIRECT_CONNECTION }}
+            - name: "JENKINS_AGENT_WORKDIR"
+              value: {{ .Values.RemoteRootDir }}
+            - name: "JENKINS_PROTOCOLS"
+              value: "JNLP4-connect"            
+          image: {{ .Values.image }}
+          imagePullPolicy: "Always"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          tty: true
+          stdin: true
+          volumeMounts:
+            - mountPath: {{ .Values.RemoteRootDir }}
+              name: "workspace-volume"
+              readOnly: false
+          workingDir: {{ .Values.RemoteRootDir }}
+      hostNetwork: false
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret }}
+      restartPolicy: "Always"s
+      volumes:
+        - name: "workspace-volume"
+          persistentVolumeClaim:
+            claimName: {{ .Values.claimName }}
+            readOnly: false
